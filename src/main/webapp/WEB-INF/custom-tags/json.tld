@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib version="2.1" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <display-name>JSON Formatter for Java Objects in JSP Pages</display-name>
+    <tlib-version>1.1</tlib-version>
+    <short-name>json</short-name>
+    <uri>/WEB-INF/custom-tags/json.tld</uri>
+
+    <function>
+        <description>
+            JSON Formatter for Java Objects in JSP Pages based on
+            https://thinkinginsoftware.blogspot.com/2013/02/custom-jsp-taglib-to-convert-object-to.html but
+            using com.google.gson.Gson Library from Google instead
+        </description>
+        <display-name>toJson</display-name>
+        <name>toJson</name>
+        <function-class>sv.com.equifax.nivel.endeudamiento.graficas.utils.JsonUtils</function-class>
+        <function-signature>
+            java.lang.String toJson(java.lang.Object)
+        </function-signature>
+        <example>
+            var ${coleccion.key} = ${json:toJson(coleccion.value)};
+        </example>
+    </function>
+</taglib>

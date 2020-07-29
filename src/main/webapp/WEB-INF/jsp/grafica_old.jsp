@@ -19,15 +19,11 @@
             var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
             var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
-            var mySeriesNames = [];
-            var mySeries=[];
-
-            <c:forEach var="coleccion" items="${dataModular}">
-                var ${coleccion.key} = ${json:toJson(coleccion.value)};
-                mySeriesNames.push("${coleccion.key}");
-                mySeries.push(${coleccion.key});
+            <c:forEach var="data" items="${edata}">
+                var ${data};
             </c:forEach>
-
+            var mySeriesNames = ["banca","comercio","tarjetas","imf","total"];
+            var mySeries=[banca,comercio,tarjetas,imf,total];
             for (var i = 0; i < mySeries.length; i++) {
                 var serie = mySeries[i];
                 var data = [];
@@ -107,9 +103,6 @@
 
 
         }); // end am4core.ready()
-    </script>
-
-</div>
     </script>
 </div>
 

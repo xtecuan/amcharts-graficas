@@ -21,7 +21,13 @@ public class WelcomeController {
 
     @RequestMapping(value = "/grafica", method = RequestMethod.GET)
     public String grafica(ModelMap model) {
-        model.put("edata", service.getData());
+        model.put("dataModular", service.getData());
         return "grafica";
+    }
+
+    @RequestMapping(value = "/grafica1", method = RequestMethod.GET)
+    public String grafica1(ModelMap model) {
+        model.put("dataModular", service.getData1());
+        return "grafica1";
     }
 }

@@ -1,10 +1,13 @@
 package sv.com.equifax.nivel.endeudamiento.graficas.service;
 
 import org.springframework.stereotype.Service;
+import sv.com.equifax.commons.bean.das.report.NEndeudamientoAmchats4Bean;
 import sv.com.equifax.nivel.endeudamiento.graficas.model.NivelEndeudamientoDTO;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import org.josql.*;
 
 @Service
 public class NivelEndeudamientoService {
@@ -95,7 +98,61 @@ public class NivelEndeudamientoService {
         return result;
     }
 
+    public Map<String,List<NEndeudamientoAmchats4Bean>> getData1(){
+        Map<String,List<NEndeudamientoAmchats4Bean>> result = new HashMap<>();
+        List<NEndeudamientoAmchats4Bean> banca =new ArrayList<>();
+        // Banca=[{"time":1243836000000,"value":5.33, "date" : "2009-06-01"}, {"time":1259647200000,"value":4.83, "date" : "2009-12-01"}, {"time":1267423200000,"value":0.9, "date" : "2010-03-01"}]
+        banca.add(new NEndeudamientoAmchats4Bean("200906",5.33 ));
+        banca.add(new NEndeudamientoAmchats4Bean("200912",4.83 ));
+        banca.add(new NEndeudamientoAmchats4Bean("201003",0.9 ));
+        result.put("banca",orderByTime(banca));
 
+        
+        List<NEndeudamientoAmchats4Bean> tarjetas =new ArrayList<>();
+        //Tarjetas=[{"time":1243836000000,"value":0.12, "date" : "2009-06-01"}, {"time":1259647200000,"value":0.09, "date" : "2009-12-01"}, {"time":1267423200000,"value":0.05, "date" : "2010-03-01"}, {"time":1251784800000,"value":0.15, "date" : "2009-09-01"}]
+        tarjetas.add(new NEndeudamientoAmchats4Bean("200906",0.12 ));
+        tarjetas.add(new NEndeudamientoAmchats4Bean("200912",0.09 ));
+        tarjetas.add(new NEndeudamientoAmchats4Bean("201003",0.05 ));
+        tarjetas.add(new NEndeudamientoAmchats4Bean("200909",0.15 ));
+        result.put("tarjetas",orderByTime(tarjetas));
+        
+
+        List<NEndeudamientoAmchats4Bean> comercio =new ArrayList<>();
+        //Comercio=[{"time":1243836000000,"value":0.67, "date" : "2009-06-01"}, {"time":1259647200000,"value":0.67, "date" : "2009-12-01"}, 
+        //{"time":1267423200000,"value":0.0, "date" : "2010-03-01"}, {"time":1251784800000,"value":0.67, "date" : "2009-09-01"}]
+        comercio.add(new NEndeudamientoAmchats4Bean("200906",0.67 ));
+        comercio.add(new NEndeudamientoAmchats4Bean("200912",0.67 ));
+        comercio.add(new NEndeudamientoAmchats4Bean("201003",0.00 ));
+        comercio.add(new NEndeudamientoAmchats4Bean("200909",0.67 ));
+        result.put("comercio",orderByTime(comercio));
+
+        List<NEndeudamientoAmchats4Bean> imf =new ArrayList<>();
+        
+
+
+        List<NEndeudamientoAmchats4Bean> hipotecario =new ArrayList<>();
+        //Hipotecario=[{"time":1259647200000,"value":0.9, "date" : "2009-12-01"}, {"time":1267423200000,"value":0.9, "date" : "2010-03-01"}]
+        hipotecario.add(new NEndeudamientoAmchats4Bean("200912",0.9 ));
+        hipotecario.add(new NEndeudamientoAmchats4Bean("201003",0.9 ));
+        result.put("hipotecario",orderByTime(hipotecario));
+
+        return result;
+    }
+
+
+    public List<NEndeudamientoAmchats4Bean> orderByTime(List<NEndeudamientoAmchats4Bean> list){
+        List<NEndeudamientoAmchats4Bean> r = new ArrayList<>();
+        Query q = new Query ();
+        try{
+            q.parse ("SELECT * FROM sv.com.equifax.commons.bean.das.report.NEndeudamientoAmchats4Bean ORDER BY  time ASC");
+            QueryResults qr = q.execute (new ArrayList<NEndeudamientoAmchats4Bean> (list));
+            System.out.println(qr.getResults());
+            r=qr.getResults();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return r;
+    }
 
 
 
