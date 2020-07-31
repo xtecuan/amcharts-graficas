@@ -28,10 +28,16 @@
                         // Themes end
                         // Create chart instance
                         var chart = am4core.create("chartdiv", am4charts.XYChart);
+                        chart.responsive.enabled = true;
 
                         // Create axes
                         var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
                         var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+                        dateAxis.baseInterval = {
+                            "timeUnit": "month",
+                            "count": 1
+                        };
 
                         var mySeriesNames = [];
                         var mySeries = [];
@@ -47,7 +53,7 @@
                             var data = [];
                             for (var j = 0; j < serie.length; j++) {
                                 var dataItem = {
-                                    date: new Date(serie[j].time)
+                                    date: new Date(serie[j].date)
                                 };
                                 dataItem["value"] = serie[j].value;
                                 data.push(dataItem);

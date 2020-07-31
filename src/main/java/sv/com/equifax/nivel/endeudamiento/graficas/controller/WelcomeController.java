@@ -30,4 +30,10 @@ public class WelcomeController {
         model.put("dataModular", service.getData1());
         return "grafica1";
     }
+
+    @RequestMapping(value = "/grafica2", method = RequestMethod.GET)
+    public String grafica2(ModelMap model) {
+        model.put("dataModular", service.getData1());
+        return "grafica2";
+    }
 }

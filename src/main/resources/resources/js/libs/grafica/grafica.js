@@ -1,83 +1,71 @@
-am4core.ready(function() {
+var seriesSettings = {
 
-// Themes begin
-  am4core.useTheme(am4themes_animated);
-// Themes end
+  Banca : {color: "#FF0000"}, //red
+  Tarjetas : {color: "#0000FF"}, //blue
+  Comercio : {color: "#00FF00"}, //green
+  IMF : {color: "#000000"}, //black
+  Hipotecario : {color: "#FF00FF"}, //FUCHSIA
+  Total : {color : "#00FF00"} //LIME
 
-
-
-
-// Create chart instance
-  var chart = am4core.create("chartdiv", am4charts.XYChart);
-
-// Create axes
-  var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-  var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+};
 
 
+function createGraph(mySeriesNames,mySeries,divname){
 
-// Create series
-  function createSeries(s, name, data) {
-    var series = chart.series.push(new am4charts.LineSeries());
-    series.dataFields.valueY = "value" + s;
-    series.dataFields.dateX = "date";
-    series.name = name;
+    
+    am4core.useTheme(am4themes_material);
+    var chart = am4core.create(divname, am4charts.XYChart);
+    chart.cursor = new am4charts.XYCursor();
 
-    var segment = series.segments.template;
-    segment.interactionsEnabled = true;
+    chart.legend = new am4charts.Legend();
+    chart.legend.useDefaultMarker = true;
+    var marker = chart.legend.markers.template.children.getIndex(0);
 
-    var hoverState = segment.states.create("hover");
-    hoverState.properties.strokeWidth = 3;
+    var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.dateFormatter = new am4core.DateFormatter();
+    dateAxis.dateFormatter.language = new am4core.Language();
+    dateAxis.dateFormatter.language.locale = am4lang_es_ES;
+    dateAxis.dateFormatter.dateFormat = "MMM/yyyy";
+    dateAxis.dateFormats.setKey("month", "MMM/yyyy");
+    dateAxis.periodChangeDateFormats.setKey("month", "MMM/yyyy");
+    dateAxis.title.text="Periodo";
+    dateAxis.cursorTooltipEnabled = false;
 
-    var dimmed = segment.states.create("dimmed");
-    dimmed.properties.stroke = am4core.color("#dadada");
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.numberFormatter = new am4core.NumberFormatter();
+    valueAxis.numberFormatter.language = new am4core.Language();
+    valueAxis.numberFormatter.language.locale = am4lang_en_US;
+    valueAxis.numberFormatter.numberFormat ="#,###.00'%'";
+    valueAxis.title.text = "% Endeudamiento";
+    valueAxis.cursorTooltipEnabled = false;
 
-    segment.events.on("over", function(event) {
-      processOver(event.target.parent.parent.parent);
-    });
+    for (let i = 0; i < mySeriesNames.length; i++) {
+      const serieName = mySeriesNames[i];
+      console.log("Processing serie: "+serieName);
 
-    segment.events.on("out", function(event) {
-      processOut(event.target.parent.parent.parent);
-    });
-    series.data = data;
-    return series;
-  }
+      var series1 = chart.series.push(new am4charts.LineSeries());
+      series1.name = serieName;
+      series1.dataFields.valueY = "value";
+      series1.dataFields.dateX = "date";
+      series1.tooltipDateFormat = "MMM/yyyy";
+      
+      
+      series1.dateFormatter = new am4core.DateFormatter();
+      series1.dateFormatter.language = new am4core.Language();
+      series1.dateFormatter.language.locale = am4lang_es_ES;
+      series1.dateFormatter.dateFormat = "MMM/yyyy";
+      
 
-  chart.legend = new am4charts.Legend();
-  chart.legend.position = "right";
-  chart.legend.scrollable = true;
-  chart.legend.itemContainers.template.events.on("over", function(event) {
-    processOver(event.target.dataItem.dataContext);
-  })
-
-  chart.legend.itemContainers.template.events.on("out", function(event) {
-    processOut(event.target.dataItem.dataContext);
-  })
-
-  function processOver(hoveredSeries) {
-    hoveredSeries.toFront();
-
-    hoveredSeries.segments.each(function(segment) {
-      segment.setState("hover");
-    })
-
-    chart.series.each(function(series) {
-      if (series != hoveredSeries) {
-        series.segments.each(function(segment) {
-          segment.setState("dimmed");
-        })
-        series.bulletsContainer.setState("dimmed");
+      series1.tooltipText = "{name}: {dateX.formatDate('MMM/yyyy')}  [bold]{valueY}[/]";
+      series1.bullets.push(new am4charts.CircleBullet());
+      var currentDataArray = mySeries[i];
+      var data = [];
+      for(let j=0;j < currentDataArray.length; j++){
+          var currentData = currentDataArray[j];
+          var dataItem = { date : new Date(currentData.time) , value : currentData.value };
+          data.push(dataItem);
       }
-    });
-  }
-
-  function processOut(hoveredSeries) {
-    chart.series.each(function(series) {
-      series.segments.each(function(segment) {
-        segment.setState("default");
-      })
-      series.bulletsContainer.setState("default");
-    });
-  }
-
-}); // end am4core.ready()
+      series1.data = data;
+      
+    }
+}
